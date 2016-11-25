@@ -1,4 +1,4 @@
-var filterWords = ["Trump", "Hillary", "Clinton", "Obama", "Republican", "Democrat"];
+var filterWords = ["Trump", "Hillary", "Clinton", "Obama", "Republican", "Democrat", "politics"];
 
 function isFilteredWord(text) {
   for (var y = 0; y < filterWords.length; y++) {
