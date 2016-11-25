@@ -3,6 +3,9 @@
   "name": "No News is Good News",
   "description": "This extension filters Google News articles about Trump, Clinton & Obama",
   "version": "1.0",
+  "permissions": [
+          "storage"
+  ],
   "content_scripts": [
   {
       "run_at" : "document_end",
