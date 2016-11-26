@@ -1,7 +1,5 @@
 var filterWords = [];
 
-var filterForm = "<input id='chrome_filter_add_word' placeholder='enter new filter'><button id='chrome_filter_add_button'>add</button><button id='chrome_filter_clear_button'>clear</button>";
-
 function addNewFilterWord() {
   var input = document.getElementById('chrome_filter_add_word'); 
   var newFilterWord = input.value;
@@ -61,10 +59,20 @@ function processArticle(article) {
   }
 }
 
-window.onload = function() {
+function createFilterFormDiv(responsetext)
+{
+  var elem =  document.createElement("div");
+  elem.setAttribute("class", "filterFrame");
+  elem.innerHTML = responsetext;
+  document.body.appendChild(elem);
 
-  //chrome.storage.local.set({'filterWords' : ["trump", "clinton"]});
-  //chrome.storage.local.get('filterWords', function(items){ if (typeof items != undefined) {filterWords = items.filterWords;} parsePage() });
+  var addButton = document.getElementById('chrome_filter_add_button');
+  addButton.addEventListener("click", addNewFilterWord);
+  var clearButton = document.getElementById('chrome_filter_clear_button');
+  clearButton.addEventListener("click", clearFilters);
+}
+
+window.onload = function() {
   chrome.storage.local.get('filterWords',
     function(items) {
       if (typeof items != 'undefined' && typeof items.filterWords != 'undefined') {
@@ -77,14 +85,16 @@ debug(items);
       parsePage();
     });
 
-
-
-  var elem =  document.createElement("DIV");
-  elem.innerHTML = filterForm;
-  elem.style = "position: fixed; top: 80px; right: 20px; z-index: 100;";
-  document.body.appendChild(elem);
-  var addButton = document.getElementById('chrome_filter_add_button');
-  addButton.addEventListener("click", addNewFilterWord);
-  var clearButton = document.getElementById('chrome_filter_clear_button');
-  clearButton.addEventListener("click", clearFilters);
+  fetch(chrome.extension.getURL("html/filter_form.html")).then(  
+    function(response) {
+      if (response.status == 200) {  
+        // Examine the text in the response  
+        response.text().then(function(data) {  
+          createFilterFormDiv(data);
+        });  
+      }
+    })  
+  .catch(function(err) {  
+    console.log('Fetch Error :-S', err);  
+  });
 }

@@ -4,12 +4,17 @@
   "description": "This extension filters Google News articles about Trump, Clinton & Obama",
   "version": "1.0",
   "permissions": [
-          "storage"
+    "storage"
+  ],
+  "web_accessible_resources": [
+    "html/*", 
+    "css/*"
   ],
   "content_scripts": [
   {
-      "run_at" : "document_end",
-      "matches": ["https://news.google.com/*"],
-      "js": ["filter.js", "google.js"]
+    "run_at" : "document_end",
+    "matches": ["https://news.google.com/*"],
+    "css": [ "css/style.css" ],
+    "js": ["filter.js", "google.js"]
   }]
 }
