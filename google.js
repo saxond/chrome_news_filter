@@ -1,4 +1,3 @@
-//var filterWords = ["Trump", "Hillary", "Clinton", "Obama", "Republican", "Democrat", "politics"];
 var filterWords = [];
 
 var filterForm = "<input id='chrome_filter_add_word' placeholder='enter new filter'><button id='chrome_filter_add_button'>add</button><button id='chrome_filter_clear_button'>clear</button>";
@@ -7,21 +6,21 @@ function addNewFilterWord() {
   var input = document.getElementById('chrome_filter_add_word'); 
   var newFilterWord = input.value;
   filterWords.push(newFilterWord)
-  chrome.storage.local.set({'filters' : filterWords});
+  chrome.storage.local.set({'filterWords' : filterWords});
   debug(filterWords);
   parsePage();
 }
 
 function clearFilters() {
   filterWords = [];
-  chrome.storage.local.set({'filters' : filterWords});
+  chrome.storage.local.set({'filterWords' : filterWords});
   debug(filterWords);
   parsePage();
 
 }
 
 function parsePage() {
-debug(filterWords);
+debug("PPFW: " + filterWords);
   try {
     var articles = document.getElementsByClassName("blended-wrapper");
     debug("Article count: " + articles.length);
@@ -64,8 +63,21 @@ function processArticle(article) {
 
 window.onload = function() {
 
-  //chrome.storage.local.set({'filters' : ["trump", "clinton"]});
-  chrome.storage.local.get('filters', function(items){ if (typeof items != undefined) {filterWords = items.filters;} parsePage() });
+  //chrome.storage.local.set({'filterWords' : ["trump", "clinton"]});
+  //chrome.storage.local.get('filterWords', function(items){ if (typeof items != undefined) {filterWords = items.filterWords;} parsePage() });
+  chrome.storage.local.get('filterWords',
+    function(items) {
+      if (typeof items != 'undefined' && typeof items.filterWords != 'undefined') {
+        filterWords = items.filterWords;
+debug(items);
+      } else {
+        filterWords = ["Trump", "Hillary", "Clinton", "Obama", "Republican", "Democrat", "politics"];
+        chrome.storage.local.set({'filterWords' : filterWords});
+      }
+      parsePage();
+    });
+
+
 
   var elem =  document.createElement("DIV");
   elem.innerHTML = filterForm;
